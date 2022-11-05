@@ -1,5 +1,8 @@
+from collections import Counter
 from datetime import datetime
 import socket
+
+import matplotlib.pyplot as plt
 
 
 class PortScanner:
@@ -60,7 +63,7 @@ class PortScanner:
     def scan(self):
         """
         Scan ports of target machines and return a report with the information
-        collected.
+        collected as a list of python dictionaries.
         """
         # clean data obtained in previous executions
         self.report = []
@@ -77,3 +80,42 @@ class PortScanner:
             self.report.append(target_info)
 
         return self.report
+
+    def report_graphs(self):
+        if not self.report:
+            return
+
+        fig, axes = plt.subplots(nrows=2, ncols=1, figsize=(14,11))
+        fig.subplots_adjust(hspace=0.3, wspace=0.5)
+        fig.suptitle('Report visualizations', fontsize=20)
+
+        # Graph reached vs unreached
+        reached_num = len([1 for d in self.report if d["state"]["reached"]])
+        unreached_num = len(self.targets) - reached_num
+    
+        labels = 'Reached', 'Unreached'
+        sizes = [reached_num, unreached_num]
+        explode = (0.1, 0) 
+
+        axes[0].pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%',
+                shadow=True, startangle=90)
+        axes[0].axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+        axes[0].set_title("Reached vs Unreached")
+
+        # Target open ports
+        ts = [t["target"] for t in self.report if t["state"]["reached"]]
+        ts_ports = [len(t["open_ports"]) for t in self.report if t["state"]["reached"]]
+
+        print(ts)
+        print(ts_ports)
+        
+
+        axes[1].barh(ts, ts_ports, align='center')
+        axes[1].set_yticks(ts_ports, labels=ts)
+        axes[1].set_title('Top 5 targets with the most open ports')
+        axes[1].set_ylabel('Target')
+        axes[1].set_xlabel('Number of open ports')
+  
+
+        plt.show()
+        
