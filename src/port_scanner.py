@@ -1,9 +1,8 @@
-from collections import Counter
 from datetime import datetime
 import socket
 
 import matplotlib.pyplot as plt
-
+import matplotlib.ticker as mticker
 
 class PortScanner:
 
@@ -85,8 +84,8 @@ class PortScanner:
         if not self.report:
             return
 
-        fig, axes = plt.subplots(nrows=2, ncols=1, figsize=(14,11))
-        fig.subplots_adjust(hspace=0.3, wspace=0.5)
+        fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(13,6))
+        fig.subplots_adjust(hspace=0.3, wspace=0.3)
         fig.suptitle('Report visualizations', fontsize=20)
 
         # Graph reached vs unreached
@@ -97,25 +96,21 @@ class PortScanner:
         sizes = [reached_num, unreached_num]
         explode = (0.1, 0) 
 
-        axes[0].pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%',
+        axes[1].pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%',
                 shadow=True, startangle=90)
-        axes[0].axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
-        axes[0].set_title("Reached vs Unreached")
+        axes[1].axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+        axes[1].set_title("Reached vs Unreached")
 
         # Target open ports
         ts = [t["target"] for t in self.report if t["state"]["reached"]]
         ts_ports = [len(t["open_ports"]) for t in self.report if t["state"]["reached"]]
 
-        print(ts)
-        print(ts_ports)
-        
-
-        axes[1].barh(ts, ts_ports, align='center')
-        axes[1].set_yticks(ts_ports, labels=ts)
-        axes[1].set_title('Top 5 targets with the most open ports')
-        axes[1].set_ylabel('Target')
-        axes[1].set_xlabel('Number of open ports')
-  
+        hbars = axes[0].barh(ts, ts_ports, align='center', height=0.2,
+                             color=(0.1, 0.1, 0.1, 0.1),  edgecolor='blue')
+        axes[0].xaxis.set_major_locator(mticker.MaxNLocator(integer=True))
+        axes[0].set_title('Targets with most open ports')
+        axes[0].set_ylabel('Target')
+        axes[0].set_xlabel('Number of open ports')
 
         plt.show()
         
