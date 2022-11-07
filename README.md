@@ -10,7 +10,7 @@ It also has a method to visualise graphs extracted from the report.
 
 - Cybersecurity
 - Data formating
-
+- Data visualization
 
 ## Steps to run this project
 
