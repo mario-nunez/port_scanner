@@ -22,6 +22,7 @@ def _test():
     scanner = PortScanner(targets=ip_addrs)
     print('\nScanning ports...')
     report = scanner.scan()
+    print('\nScan finished')
 
     # report graphs
     scanner.report_graphs()

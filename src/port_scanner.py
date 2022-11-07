@@ -105,8 +105,10 @@ class PortScanner:
         ts = [t["target"] for t in self.report if t["state"]["reached"]]
         ts_ports = [len(t["open_ports"]) for t in self.report if t["state"]["reached"]]
 
-        hbars = axes[0].barh(ts, ts_ports, align='center', height=0.2,
-                             color=(0.1, 0.1, 0.1, 0.1),  edgecolor='blue')
+        axes[0].set_axisbelow(True)
+        axes[0].xaxis.grid(color='gray', linestyle='dashed')
+        axes[0].barh(ts, ts_ports, align='center', height=0.2, 
+                     color='skyblue',  edgecolor='blue')
         axes[0].xaxis.set_major_locator(mticker.MaxNLocator(integer=True))
         axes[0].set_title('Targets with most open ports')
         axes[0].set_ylabel('Target')
