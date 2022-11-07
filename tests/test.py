@@ -1,6 +1,10 @@
 import json
+import sys
+ 
+# adding Folder_2/subfolder to the system path
+sys.path.insert(0, './../src')
 
-from ..src.port_scanner import PortScanner 
+from port_scanner import PortScanner 
 
 
 def _test():
@@ -18,6 +22,10 @@ def _test():
     scanner = PortScanner(targets=ip_addrs)
     print('\nScanning ports...')
     report = scanner.scan()
+    print('\nScan finished')
+
+    # report graphs
+    scanner.report_graphs()
 
     # create json with the scan results
     report_json = json.dumps(report, indent = 4) 
